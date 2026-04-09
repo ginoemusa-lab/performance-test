@@ -1,41 +1,1245 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    body {background-color: #090909}
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #ece8de; -webkit-text-stroke: #ece8de}
-    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'Helvetica Neue'; color: #bc993c; -webkit-text-stroke: #bc993c}
-    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 96.0px 'Helvetica Neue'; color: #bc993c; -webkit-text-stroke: #bc993c}
-    p.p5 {margin: 0.0px 0.0px 40.0px 0.0px; font: 15.0px 'Helvetica Neue'; color: #757575; -webkit-text-stroke: #757575}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 32.0px 'Helvetica Neue'; color: #bc993c; -webkit-text-stroke: #bc993c}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'Helvetica Neue'; color: #757575; -webkit-text-stroke: #757575}
-    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'Helvetica Neue'; color: #ece8de; -webkit-text-stroke: #ece8de; background-color: #1f1f1f; min-height: 15.0px}
-    p.p9 {margin: 0.0px 0.0px 0.0px 0.0px; font: 13.0px 'Helvetica Neue'; color: #090909; -webkit-text-stroke: #090909}
-    p.p10 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; font: 13.0px 'Helvetica Neue'; color: #090909; -webkit-text-stroke: #090909; min-height: 16.0px}
-    span.s1 {font-kerning: none}
-    span.s2 {font-kerning: none; background-color: #bc993c}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Performance Test — Men's Hormonal & Performance Assessment</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  :root {
+    --black: #080808;
+    --surface: #111111;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --gold: #C9A84C;
+    --gold-light: #e8c97a;
+    --gold-dim: rgba(201,168,76,0.12);
+    --white: #f0ece4;
+    --grey: #888;
+    --red: #c0392b;
+  }
+ 
+  html, body {
+    min-height: 100%;
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+ 
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+ 
+  .app {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+ 
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--border);
+    z-index: 100;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    box-shadow: 0 0 12px var(--gold);
+  }
+ 
+  /* SCREENS */
+  .screen {
+    width: 100%;
+    max-width: 680px;
+    display: none;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .screen.active { display: block; }
+ 
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+ 
+  /* INTRO SCREEN */
+  .intro-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .intro-eyebrow::before, .intro-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+ 
+  .intro-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 12vw, 100px);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+  .intro-title span {
+    color: var(--gold);
+    display: block;
+  }
+ 
+  .intro-subtitle {
+    font-size: 15px;
+    color: var(--grey);
+    line-height: 1.7;
+    margin: 28px 0 40px;
+    max-width: 480px;
+    font-weight: 300;
+  }
+ 
+  .intro-stats {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+ 
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 40px 0;
+  }
+ 
+  /* BUTTONS */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--gold);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px 40px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 32px rgba(201,168,76,0.3);
+  }
+  .btn-primary svg { width: 16px; height: 16px; }
+ 
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--grey);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 12px 0;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    margin-top: 20px;
+  }
+  .btn-secondary:hover { color: var(--white); }
+ 
+  /* QUESTION SCREEN */
+  .q-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+  }
+  .q-counter {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--grey);
+  }
+  .q-counter span { color: var(--gold); }
+ 
+  .q-category {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    background: var(--gold-dim);
+    padding: 5px 12px;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+ 
+  .q-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 6vw, 48px);
+    line-height: 1.05;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+ 
+  .q-sub {
+    font-size: 14px;
+    color: var(--grey);
+    margin-bottom: 40px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+ 
+  /* OPTIONS */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+ 
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .option::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0;
+    background: linear-gradient(90deg, var(--gold-dim), transparent);
+    transition: width 0.3s;
+  }
+  .option:hover::before { width: 100%; }
+  .option:hover {
+    border-color: rgba(201,168,76,0.4);
+  }
+  .option.selected {
+    border-color: var(--gold);
+    background: var(--gold-dim);
+  }
+  .option.selected::before { width: 100%; }
+ 
+  .option-letter {
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--grey);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option.selected .option-letter {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--black);
+  }
+ 
+  .option-text {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.4;
+    color: var(--white);
+  }
+ 
+  .option-score {
+    margin-left: auto;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--border);
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+  .option.selected .option-score { color: var(--gold); }
+ 
+  /* NAVIGATION */
+  .q-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 40px;
+  }
+ 
+  /* RESULTS SCREEN */
+  .result-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+ 
+  .result-score-ring {
+    width: 160px;
+    height: 160px;
+    margin: 0 auto 32px;
+    position: relative;
+  }
+  .result-score-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+  .result-score-ring .ring-bg {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 3;
+  }
+  .result-score-ring .ring-fill {
+    fill: none;
+    stroke: var(--gold);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 440;
+    stroke-dashoffset: 440;
+    filter: drop-shadow(0 0 8px var(--gold));
+    transition: stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .ring-number {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .ring-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 0.02em;
+    color: var(--white);
+    line-height: 1;
+  }
+  .ring-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+ 
+  .result-tier {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 8vw, 64px);
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+ 
+  .result-desc {
+    font-size: 15px;
+    color: var(--grey);
+    line-height: 1.7;
+    max-width: 520px;
+    margin: 0 auto;
+    font-weight: 300;
+  }
+ 
+  /* CATEGORY BREAKDOWN */
+  .breakdown {
+    margin: 40px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .breakdown-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 24px;
+  }
+ 
+  .breakdown-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .breakdown-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .breakdown-name {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+  .breakdown-pct {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    color: var(--gold);
+  }
+  .breakdown-track {
+    height: 2px;
+    background: var(--border);
+    width: 100%;
+  }
+  .breakdown-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    box-shadow: 0 0 8px rgba(201,168,76,0.4);
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+ 
+  /* CTA BLOCK */
+  .cta-block {
+    border: 1px solid var(--border);
+    padding: 36px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+    margin-top: 40px;
+  }
+  .cta-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+ 
+  .cta-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .cta-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(28px, 5vw, 40px);
+    line-height: 1.05;
+    margin-bottom: 16px;
+  }
+  .cta-body {
+    font-size: 14px;
+    color: var(--grey);
+    line-height: 1.7;
+    margin-bottom: 28px;
+    font-weight: 300;
+  }
+ 
+  .cta-includes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .cta-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--white);
+    font-weight: 300;
+  }
+  .cta-item-icon {
+    color: var(--gold);
+    flex-shrink: 0;
+    font-size: 11px;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+ 
+  /* SHARE ROW */
+  .share-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+  }
+  .share-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+  }
+  .share-btn {
+    padding: 8px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+  }
+  .share-btn:hover { border-color: var(--gold); color: var(--gold); }
+ 
+  /* DECORATIVE */
+  .corner-mark {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-color: var(--gold);
+    border-style: solid;
+    opacity: 0.5;
+  }
+  .corner-mark.tl { top: 12px; left: 12px; border-width: 1px 0 0 1px; }
+  .corner-mark.br { bottom: 12px; right: 12px; border-width: 0 1px 1px 0; }
+ 
+  /* EMAIL GATE */
+  .gate-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .gate-eyebrow::before, .gate-eyebrow::after {
+    content: '';
+    display: inline-block;
+    width: 24px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+ 
+  .gate-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 8vw, 64px);
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    margin-bottom: 16px;
+  }
+ 
+  .gate-sub {
+    font-size: 14px;
+    color: var(--grey);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    font-weight: 300;
+    max-width: 460px;
+  }
+ 
+  .gate-preview {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .gate-preview-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--grey);
+    letter-spacing: 0.05em;
+  }
+  .gate-preview-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+ 
+  .gate-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+ 
+  .gate-input-row {
+    display: flex;
+    gap: 12px;
+  }
+ 
+  .gate-input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 16px 20px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+  .gate-input::placeholder { color: #555; }
+  .gate-input:focus { border-color: var(--gold); }
+  .gate-input.error { border-color: var(--red); }
+ 
+  .gate-error {
+    font-size: 12px;
+    color: var(--red);
+    letter-spacing: 0.05em;
+    min-height: 16px;
+    display: none;
+  }
+  .gate-error.visible { display: block; }
+ 
+  .gate-privacy {
+    font-size: 11px;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 4px;
+    letter-spacing: 0.03em;
+  }
+ 
+  .gate-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .gate-divider::before, .gate-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .gate-divider span {
+    font-size: 11px;
+    color: var(--border);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+ 
+  .gate-score-tease {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .gate-score-tease::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(201,168,76,0.04));
+  }
+  .gate-blur-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    filter: blur(8px);
+    user-select: none;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .gate-tease-text {
+    flex: 1;
+  }
+  .gate-tease-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white);
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+  }
+  .gate-tease-sub {
+    font-size: 12px;
+    color: var(--grey);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .gate-lock {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+ 
+  /* MOBILE */
+  @media (max-width: 480px) {
+    .app { padding: 60px 16px 40px; }
+    .intro-stats { gap: 24px; }
+    .cta-block { padding: 24px 20px; }
+    .q-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .gate-input-row { flex-direction: column; }
+  }
+</style>
 </head>
 <body>
-<p class="p1"><span class="s1">A</span></p>
-<p class="p2"><span class="s1">MEN'S PERFORMANCE ASSESSMENT</span></p>
-<h1 style="margin: 0.0px 0.0px 8.0px 0.0px; font: 96.0px 'Helvetica Neue'; color: #ece8de; -webkit-text-stroke: #ece8de"><span class="s1">The</span></h1>
-<p class="p4"><span class="s1">Performance</span></p>
-<p class="p4"><span class="s1">Test.</span></p>
-<p class="p5"><span class="s1">Most men are operating at 60% — not because they lack discipline, but because their biology is working against them. This assessment identifies exactly where you're leaking performance.</span></p>
-<p class="p6"><span class="s1">8</span></p>
-<p class="p7"><span class="s1">QUESTIONS</span></p>
-<p class="p6"><span class="s1">3</span></p>
-<p class="p7"><span class="s1">MIN TO COMPLETE</span></p>
-<p class="p6"><span class="s1">4</span></p>
-<p class="p7"><span class="s1">PERFORMANCE PILLARS</span></p>
-<p class="p8"><span class="s1"></span><br></p>
-<p class="p9"><span class="s2">BEGIN ASSESSMENT</span></p>
-<p class="p10"><span class="s1"></span><br></p>
+ 
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progressBar" style="width:0%"></div>
+</div>
+ 
+<div class="app">
+ 
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-eyebrow">Men's Performance Assessment</div>
+    <h1 class="intro-title">The<span>Performance<br>Test.</span></h1>
+    <p class="intro-subtitle">Most men are operating at 60% — not because they lack discipline, but because their biology is working against them. This assessment identifies exactly where you're leaking performance.</p>
+    <div class="intro-stats">
+      <div class="stat">
+        <div class="stat-num">8</div>
+        <div class="stat-label">Questions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Min to complete</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Performance pillars</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <button class="btn-primary" onclick="startQuiz()">
+      Begin Assessment
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
+  </div>
+ 
+  <!-- QUESTION -->
+  <div class="screen" id="screen-question">
+    <div class="q-header">
+      <div class="q-counter">QUESTION <span id="qNum">1</span> OF 8</div>
+      <div class="q-category" id="qCategory">Energy & Recovery</div>
+    </div>
+    <h2 class="q-text" id="qText"></h2>
+    <p class="q-sub" id="qSub"></p>
+    <div class="options" id="optionsContainer"></div>
+    <div class="q-nav">
+      <button class="btn-secondary" id="backBtn" onclick="prevQuestion()">
+        ← Back
+      </button>
+      <button class="btn-primary" id="nextBtn" onclick="nextQuestion()" style="opacity:0.3;pointer-events:none">
+        Continue
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+ 
+  <!-- EMAIL GATE -->
+  <div class="screen" id="screen-gate">
+    <div class="gate-eyebrow">Almost There</div>
+    <h2 class="gate-title">Your Results<br>Are Ready.</h2>
+    <p class="gate-sub">Enter your details below to unlock your full performance breakdown — including your score across all 4 pillars and a personalised action plan.</p>
+ 
+    <div class="gate-score-tease">
+      <div class="gate-blur-score" id="gateBlurScore">24</div>
+      <div class="gate-tease-text">
+        <div class="gate-tease-title">Your Performance Score</div>
+        <div class="gate-tease-sub">Unlock your full breakdown — energy, hormones, body composition & mental performance</div>
+      </div>
+      <div class="gate-lock">🔒</div>
+    </div>
+ 
+    <div class="gate-divider"><span>enter your details</span></div>
+ 
+    <div class="gate-form">
+      <div class="gate-input-row">
+        <input class="gate-input" id="gateName" type="text" placeholder="First name" autocomplete="given-name" />
+        <input class="gate-input" id="gateEmail" type="email" placeholder="Email address" autocomplete="email" />
+      </div>
+      <div class="gate-error" id="gateError">Please enter a valid name and email address.</div>
+      <button class="btn-primary" onclick="submitGate()" style="width:100%;justify-content:center">
+        Unlock My Results
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+ 
+    <div class="gate-preview">
+      <div class="gate-preview-item"><div class="gate-preview-dot"></div>Full pillar breakdown</div>
+      <div class="gate-preview-item"><div class="gate-preview-dot"></div>Personalised action plan</div>
+      <div class="gate-preview-item"><div class="gate-preview-dot"></div>No spam, ever</div>
+    </div>
+ 
+    <p class="gate-privacy">By submitting, you agree to receive occasional performance insights from this coaching programme. Unsubscribe anytime.</p>
+ 
+    <button class="btn-secondary" onclick="prevQuestion(); showScreen('screen-question');">
+      ← Back to questions
+    </button>
+  </div>
+ 
+  <div class="screen" id="screen-results">
+    <div class="result-header">
+      <div class="intro-eyebrow">Your Results</div>
+      <div class="result-score-ring">
+        <svg viewBox="0 0 160 160">
+          <circle class="ring-bg" cx="80" cy="80" r="70"/>
+          <circle class="ring-fill" id="ringFill" cx="80" cy="80" r="70"/>
+        </svg>
+        <div class="ring-number">
+          <div class="ring-num" id="scoreNum">0</div>
+          <div class="ring-label">Score</div>
+        </div>
+      </div>
+      <h2 class="result-tier" id="tierName"></h2>
+      <p class="result-desc" id="tierDesc"></p>
+    </div>
+ 
+    <div class="divider"></div>
+ 
+    <div class="breakdown">
+      <div class="breakdown-label">Pillar Breakdown</div>
+      <div class="breakdown-row">
+        <div class="breakdown-row-top">
+          <span class="breakdown-name">Energy & Recovery</span>
+          <span class="breakdown-pct" id="pct1">0%</span>
+        </div>
+        <div class="breakdown-track"><div class="breakdown-fill" id="fill1"></div></div>
+      </div>
+      <div class="breakdown-row">
+        <div class="breakdown-row-top">
+          <span class="breakdown-name">Hormonal Health</span>
+          <span class="breakdown-pct" id="pct2">0%</span>
+        </div>
+        <div class="breakdown-track"><div class="breakdown-fill" id="fill2"></div></div>
+      </div>
+      <div class="breakdown-row">
+        <div class="breakdown-row-top">
+          <span class="breakdown-name">Body Composition</span>
+          <span class="breakdown-pct" id="pct3">0%</span>
+        </div>
+        <div class="breakdown-track"><div class="breakdown-fill" id="fill3"></div></div>
+      </div>
+      <div class="breakdown-row">
+        <div class="breakdown-row-top">
+          <span class="breakdown-name">Mental Performance</span>
+          <span class="breakdown-pct" id="pct4">0%</span>
+        </div>
+        <div class="breakdown-track"><div class="breakdown-fill" id="fill4"></div></div>
+      </div>
+    </div>
+ 
+    <div class="cta-block">
+      <div class="corner-mark tl"></div>
+      <div class="corner-mark br"></div>
+      <div class="cta-eyebrow" id="ctaEyebrow">Next Step</div>
+      <h3 class="cta-title" id="ctaTitle">Ready to Optimise Your Performance?</h3>
+      <p class="cta-body" id="ctaBody">Work with a performance specialist who uses actual bloodwork — not guesswork — to build your programme around your biology.</p>
+      <div class="cta-includes">
+        <div class="cta-item"><span class="cta-item-icon">▸</span>Full hormonal bloodwork panel included (testosterone, cortisol, thyroid & more)</div>
+        <div class="cta-item"><span class="cta-item-icon">▸</span>Personalised training & nutrition built around your biomarkers</div>
+        <div class="cta-item"><span class="cta-item-icon">▸</span>Retest at 12 weeks to measure what's actually changed</div>
+        <div class="cta-item"><span class="cta-item-icon">▸</span>1:1 coaching with a dedicated specialist — not a template</div>
+      </div>
+      <button class="btn-primary" onclick="window.open('#','_blank')">
+        Book a Free Strategy Call
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <div class="share-row">
+        <span class="share-label">Share your result</span>
+        <button class="share-btn" onclick="shareResult()">Copy Link</button>
+        <button class="share-btn" onclick="shareIG()">Instagram</button>
+      </div>
+    </div>
+ 
+    <button class="btn-secondary" onclick="restartQuiz()" style="margin-top:32px">
+      ↺ Retake the test
+    </button>
+  </div>
+ 
+</div>
+ 
+<script>
+const questions = [
+  {
+    category: "Energy & Recovery",
+    pillar: 0,
+    text: "How would you rate your energy levels throughout the day?",
+    sub: "Be honest — not what you want them to be, but how they actually are.",
+    options: [
+      { text: "Consistently high — I rarely crash or feel sluggish", score: 4 },
+      { text: "Good in the morning, but I fade by early afternoon", score: 2 },
+      { text: "Unpredictable — some days great, others terrible", score: 1 },
+      { text: "Chronically low — I rely on caffeine just to function", score: 0 },
+    ]
+  },
+  {
+    category: "Energy & Recovery",
+    pillar: 0,
+    text: "How do you feel after a full night's sleep?",
+    sub: "Quality of sleep matters as much as quantity.",
+    options: [
+      { text: "Refreshed and ready — I wake up before my alarm most days", score: 4 },
+      { text: "Decent, though I could always use more", score: 2 },
+      { text: "Tired — I never feel fully recovered", score: 1 },
+      { text: "Exhausted — sleep doesn't seem to restore me", score: 0 },
+    ]
+  },
+  {
+    category: "Hormonal Health",
+    pillar: 1,
+    text: "How would you describe your sex drive and motivation over the past 3 months?",
+    sub: "Libido is a direct proxy for your androgenic health.",
+    options: [
+      { text: "Strong — I feel driven and physically motivated", score: 4 },
+      { text: "Normal — nothing dramatic either way", score: 2 },
+      { text: "Lower than it used to be — noticeable decline", score: 1 },
+      { text: "Very low — I have little desire for either", score: 0 },
+    ]
+  },
+  {
+    category: "Hormonal Health",
+    pillar: 1,
+    text: "How do you respond to high-stress situations or prolonged periods of pressure?",
+    sub: "Cortisol dysregulation is one of the most underdiagnosed performance killers.",
+    options: [
+      { text: "I handle it well — I perform better under pressure", score: 4 },
+      { text: "I cope, but I notice it taking a toll over time", score: 2 },
+      { text: "Stress hits me hard — recovery takes a while", score: 1 },
+      { text: "I'm in a constant state of stress and can't switch off", score: 0 },
+    ]
+  },
+  {
+    category: "Body Composition",
+    pillar: 2,
+    text: "How does your body respond to your current training and diet?",
+    sub: "Poor response often signals an underlying hormonal or metabolic issue.",
+    options: [
+      { text: "Great — I make consistent progress when I'm consistent", score: 4 },
+      { text: "Slow — progress comes, but it takes longer than expected", score: 2 },
+      { text: "I plateau often, despite doing everything right", score: 1 },
+      { text: "My body isn't responding at all right now", score: 0 },
+    ]
+  },
+  {
+    category: "Body Composition",
+    pillar: 2,
+    text: "Where do you tend to store excess body fat?",
+    sub: "Fat distribution pattern is a key hormonal signal.",
+    options: [
+      { text: "I don't carry much — reasonably lean naturally", score: 4 },
+      { text: "Fairly evenly distributed", score: 3 },
+      { text: "Mainly around my midsection and lower back", score: 1 },
+      { text: "Belly, chest and around the waist — stubborn and won't shift", score: 0 },
+    ]
+  },
+  {
+    category: "Mental Performance",
+    pillar: 3,
+    text: "How sharp is your focus and mental clarity day-to-day?",
+    sub: "Cognitive performance is deeply tied to hormonal and metabolic health.",
+    options: [
+      { text: "Sharp — I can lock in for extended periods without effort", score: 4 },
+      { text: "Generally good, with occasional brain fog", score: 2 },
+      { text: "I struggle to concentrate and often feel foggy", score: 1 },
+      { text: "My thinking feels slow and I can't retain information well", score: 0 },
+    ]
+  },
+  {
+    category: "Mental Performance",
+    pillar: 3,
+    text: "How is your mood and emotional resilience?",
+    sub: "Mood stability is one of the clearest indicators of hormonal balance.",
+    options: [
+      { text: "Stable and positive — I bounce back quickly from setbacks", score: 4 },
+      { text: "Mostly good, with occasional low periods", score: 2 },
+      { text: "Irritable, flat or anxious more often than not", score: 1 },
+      { text: "Significant mood issues — I struggle daily", score: 0 },
+    ]
+  }
+];
+ 
+const tiers = [
+  {
+    min: 0, max: 8,
+    name: "CRITICAL",
+    color: "#c0392b",
+    desc: "Your performance markers are significantly compromised. Multiple systems — likely hormonal, recovery, and metabolic — are under-functioning. This isn't about discipline. Your biology needs intervention.",
+    ctaEyebrow: "Urgent — Don't Wait",
+    ctaTitle: "Your Biology Is Working Against You",
+    ctaBody: "At this score, something significant is suppressing your performance. The good news: it's almost always fixable with the right diagnostics and programme. Book a call — let's find out what's actually going on."
+  },
+  {
+    min: 9, max: 16,
+    name: "BELOW OPTIMAL",
+    color: "#d4801a",
+    desc: "You're getting by, but leaving a lot on the table. Multiple pillars are underperforming — and without identifying the root cause, no amount of training or willpower will fully fix it.",
+    ctaEyebrow: "There's a clear path forward",
+    ctaTitle: "You're Closer Than You Think",
+    ctaBody: "With targeted bloodwork and a personalised programme, men at your score typically see dramatic improvements within 8–12 weeks. Book a call and let's map out exactly what needs to change."
+  },
+  {
+    min: 17, max: 24,
+    name: "DEVELOPING",
+    color: "#c9a84c",
+    desc: "Solid foundations, but there are clear gaps. You're performing reasonably well in some areas while others are holding you back. With precise optimisation, your ceiling is significantly higher.",
+    ctaEyebrow: "You're almost there",
+    ctaTitle: "Precision Is What You Need Now",
+    ctaBody: "At your level, the gains come from specificity — understanding exactly which biomarkers to target. Book a call and find out where your highest leverage is."
+  },
+  {
+    min: 25, max: 32,
+    name: "HIGH PERFORMER",
+    color: "#c9a84c",
+    desc: "You're operating well across most pillars. To go from good to elite, you need data — not more effort. The difference between 80% and 100% is measured in the bloodwork, not the gym.",
+    ctaEyebrow: "Ready for the next level?",
+    ctaTitle: "From High Performer to Elite",
+    ctaBody: "You're already ahead of most men. The next frontier is precision — using bloodwork to fine-tune what's working and eliminate what's subtly holding you back."
+  }
+];
+ 
+let currentQ = 0;
+let answers = new Array(questions.length).fill(null);
+ 
+function startQuiz() {
+  showScreen('screen-question');
+  renderQuestion();
+  updateProgress();
+}
+ 
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = '';
+}
+ 
+function renderQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('qNum').textContent = currentQ + 1;
+  document.getElementById('qCategory').textContent = q.category;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('qSub').textContent = q.sub;
+ 
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[currentQ] === i ? ' selected' : '');
+    div.innerHTML = `
+      <div class="option-letter">${letters[i]}</div>
+      <div class="option-text">${opt.text}</div>
+      <div class="option-score">${opt.score}</div>
+    `;
+    div.onclick = () => selectOption(i);
+    container.appendChild(div);
+  });
+ 
+  const nextBtn = document.getElementById('nextBtn');
+  const backBtn = document.getElementById('backBtn');
+  
+  if (answers[currentQ] !== null) {
+    nextBtn.style.opacity = '1';
+    nextBtn.style.pointerEvents = 'auto';
+  } else {
+    nextBtn.style.opacity = '0.3';
+    nextBtn.style.pointerEvents = 'none';
+  }
+ 
+  nextBtn.innerHTML = currentQ === questions.length - 1 
+    ? 'See My Results <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>'
+    : 'Continue <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+ 
+  backBtn.style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+}
+ 
+function selectOption(i) {
+  answers[currentQ] = i;
+  document.querySelectorAll('.option').forEach((el, idx) => {
+    el.classList.toggle('selected', idx === i);
+  });
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.style.opacity = '1';
+  nextBtn.style.pointerEvents = 'auto';
+}
+ 
+function nextQuestion() {
+  if (answers[currentQ] === null) return;
+  if (currentQ < questions.length - 1) {
+    currentQ++;
+    renderQuestion();
+    updateProgress();
+  } else {
+    showGate();
+  }
+}
+ 
+function showGate() {
+  const total = answers.reduce((sum, ans, i) => {
+    return sum + (ans !== null ? questions[i].options[ans].score : 0);
+  }, 0);
+  document.getElementById('gateBlurScore').textContent = total;
+  showScreen('screen-gate');
+  document.getElementById('progressBar').style.width = '95%';
+}
+ 
+function submitGate() {
+  const name = document.getElementById('gateName').value.trim();
+  const email = document.getElementById('gateEmail').value.trim();
+  const errorEl = document.getElementById('gateError');
+  const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+ 
+  if (!name || !emailValid) {
+    errorEl.classList.add('visible');
+    document.getElementById('gateName').classList.toggle('error', !name);
+    document.getElementById('gateEmail').classList.toggle('error', !emailValid);
+    return;
+  }
+ 
+  errorEl.classList.remove('visible');
+  document.getElementById('gateName').classList.remove('error');
+  document.getElementById('gateEmail').classList.remove('error');
+ 
+  // Hook your email provider here e.g. Mailchimp, Kit, Klaviyo
+  // fetch('https://your-webhook.com', { method:'POST', body: JSON.stringify({ name, email }) })
+  console.log('Lead captured:', { name, email });
+ 
+  showResults(name);
+}
+ 
+function prevQuestion() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+    updateProgress();
+  }
+}
+ 
+function updateProgress() {
+  const pct = ((currentQ) / questions.length) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+ 
+function showResults(name) {
+  document.getElementById('progressBar').style.width = '100%';
+  
+  // Calculate total score
+  const total = answers.reduce((sum, ans, i) => {
+    return sum + (ans !== null ? questions[i].options[ans].score : 0);
+  }, 0);
+  const maxScore = questions.length * 4;
+ 
+  // Calculate pillar scores
+  const pillars = [0, 0, 0, 0];
+  const pillarMax = [0, 0, 0, 0];
+  questions.forEach((q, i) => {
+    pillars[q.pillar] += answers[i] !== null ? q.options[answers[i]].score : 0;
+    pillarMax[q.pillar] += 4;
+  });
+ 
+  // Find tier
+  const tier = tiers.find(t => total >= t.min && total <= t.max) || tiers[0];
+ 
+  showScreen('screen-results');
+ 
+  // Animate score ring
+  setTimeout(() => {
+    const circumference = 2 * Math.PI * 70;
+    const offset = circumference - (total / maxScore) * circumference;
+    document.getElementById('ringFill').style.strokeDashoffset = offset;
+    document.getElementById('ringFill').style.stroke = tier.color;
+  }, 100);
+ 
+  // Count up number
+  let count = 0;
+  const interval = setInterval(() => {
+    count = Math.min(count + 1, total);
+    document.getElementById('scoreNum').textContent = count;
+    if (count >= total) clearInterval(interval);
+  }, 40);
+ 
+  document.querySelector('#screen-results .intro-eyebrow').textContent = name ? `${name}'s Results` : 'Your Results';
+  document.getElementById('tierName').textContent = tier.name;
+  document.getElementById('tierName').style.color = tier.color;
+  document.getElementById('tierDesc').textContent = tier.desc;
+  document.getElementById('ctaEyebrow').textContent = tier.ctaEyebrow;
+  document.getElementById('ctaTitle').textContent = tier.ctaTitle;
+  document.getElementById('ctaBody').textContent = tier.ctaBody;
+ 
+  // Animate bars
+  setTimeout(() => {
+    ['fill1','fill2','fill3','fill4'].forEach((id, i) => {
+      const pct = Math.round((pillars[i] / pillarMax[i]) * 100);
+      document.getElementById(id).style.width = pct + '%';
+      document.getElementById('pct' + (i+1)).textContent = pct + '%';
+    });
+  }, 300);
+}
+ 
+function restartQuiz() {
+  currentQ = 0;
+  answers = new Array(questions.length).fill(null);
+  document.getElementById('progressBar').style.width = '0%';
+  document.getElementById('gateName').value = '';
+  document.getElementById('gateEmail').value = '';
+  document.getElementById('gateError').classList.remove('visible');
+  showScreen('screen-intro');
+}
+ 
+function shareResult() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    alert('Link copied!');
+  });
+}
+ 
+function shareIG() {
+  alert('Screenshot your results and share to your story!');
+}
+</script>
 </body>
 </html>
+ 
