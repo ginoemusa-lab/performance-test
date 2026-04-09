@@ -1127,7 +1127,7 @@ function showGate() {
   document.getElementById('progressBar').style.width = '95%';
 }
  
-function submitGate() {
+async function submitGate() {
   const name = document.getElementById('gateName').value.trim();
   const email = document.getElementById('gateEmail').value.trim();
   const errorEl = document.getElementById('gateError');
@@ -1144,9 +1144,28 @@ function submitGate() {
   document.getElementById('gateName').classList.remove('error');
   document.getElementById('gateEmail').classList.remove('error');
  
-  // Hook your email provider here e.g. Mailchimp, Kit, Klaviyo
-  // fetch('https://your-webhook.com', { method:'POST', body: JSON.stringify({ name, email }) })
-  console.log('Lead captured:', { name, email });
+  const btn = document.querySelector('#screen-gate .btn-primary');
+  btn.style.opacity = '0.6';
+  btn.style.pointerEvents = 'none';
+  btn.innerHTML = 'Unlocking... <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>';
+ 
+  const firstName = name.split(' ')[0];
+  const lastName = name.split(' ').slice(1).join(' ') || '';
+ 
+  try {
+    await fetch('https://api.convertkit.com/v3/forms/9309210/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: 'VL3ZtcBT_zpSx_wLkhRwOQ',
+        email: email,
+        first_name: firstName,
+        fields: { last_name: lastName }
+      })
+    });
+  } catch(e) {
+    console.warn('Kit error:', e);
+  }
  
   showResults(name);
 }
@@ -1242,4 +1261,3 @@ function shareIG() {
 </script>
 </body>
 </html>
- 
