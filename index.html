@@ -882,7 +882,7 @@
         <div class="cta-item"><span class="cta-item-icon">▸</span>Retest at 12 weeks to measure what's actually changed</div>
         <div class="cta-item"><span class="cta-item-icon">▸</span>1:1 coaching with a dedicated specialist — not a template</div>
       </div>
-      <button class="btn-primary" onclick="window.open('#','_blank')">
+      <button class="btn-primary" onclick="window.open('https://calendly.com/ginoemusa/30min','_blank')">
         Book a Free Strategy Call
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
       </button>
@@ -1152,17 +1152,40 @@ async function submitGate() {
   const firstName = name.split(' ')[0];
   const lastName = name.split(' ').slice(1).join(' ') || '';
  
+  // Submit to Kit via hidden iframe to bypass CORS
   try {
-    await fetch('https://api.convertkit.com/v3/forms/9309210/subscribe', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        api_key: 'VL3ZtcBT_zpSx_wLkhRwOQ',
-        email: email,
-        first_name: firstName,
-        fields: { last_name: lastName }
-      })
+    const iframe = document.createElement('iframe');
+    iframe.name = 'kit-iframe';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+ 
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = 'https://app.kit.com/forms/9309210/subscriptions';
+    form.target = 'kit-iframe';
+    form.style.display = 'none';
+ 
+    const fields = {
+      'email_address': email,
+      'first_name': firstName,
+    };
+ 
+    Object.entries(fields).forEach(([key, val]) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key;
+      input.value = val;
+      form.appendChild(input);
     });
+ 
+    document.body.appendChild(form);
+    form.submit();
+ 
+    // Clean up after submission
+    setTimeout(() => {
+      document.body.removeChild(form);
+      document.body.removeChild(iframe);
+    }, 3000);
   } catch(e) {
     console.warn('Kit error:', e);
   }
