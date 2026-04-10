@@ -1,3 +1,6 @@
+Performance assessment · HTML
+Copy
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -722,6 +725,8 @@
     .gate-input-row { flex-direction: column; }
   }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>emailjs.init('pQRvG2nBkcUqxNzte');</script>
 </head>
 <body>
  
@@ -1189,6 +1194,40 @@ async function submitGate() {
   } catch(e) {
     console.warn('Kit error:', e);
   }
+ 
+  // Build answers summary
+  const letters = ['A','B','C','D'];
+  const answerLines = questions.map((q, i) => {
+    const selected = answers[i] !== null ? letters[answers[i]] + ') ' + q.options[answers[i]].text : 'Not answered';
+    return (i+1) + '. ' + q.text + '\n   → ' + selected;
+  }).join('\n\n');
+ 
+  const total = answers.reduce((sum, ans, i) => sum + (ans !== null ? questions[i].options[ans].score : 0), 0);
+  const maxScore = questions.length * 4;
+ 
+  const pillars = [0,0,0,0];
+  const pillarMax = [0,0,0,0];
+  questions.forEach((q,i) => {
+    pillars[q.pillar] += answers[i] !== null ? q.options[answers[i]].score : 0;
+    pillarMax[q.pillar] += 4;
+  });
+ 
+  const tier = tiers.find(t => total >= t.min && total <= t.max) || tiers[0];
+ 
+  const pillarLabels = ['Energy & Recovery','Hormonal Health','Body Composition','Mental Performance'];
+  const pillarScores = pillars.map((p,i) => Math.round((p/pillarMax[i])*100) + '%');
+ 
+  emailjs.send('service_xibtquv', 'template_zjyum8j', {
+    name: name,
+    email: email,
+    score: total + ' / ' + maxScore,
+    tier: tier.name,
+    energy: pillarScores[0],
+    hormonal: pillarScores[1],
+    body: pillarScores[2],
+    mental: pillarScores[3],
+    answers: answerLines
+  }).catch(e => console.warn('EmailJS error:', e));
  
   showResults(name);
 }
