@@ -713,6 +713,65 @@
     flex-shrink: 0;
   }
  
+  /* PERCENTILE SECTION */
+  .percentile-block {
+    margin: 0 0 0;
+    padding: 32px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .percentile-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+  .percentile-headline {
+    font-family: "Bebas Neue", sans-serif;
+    font-size: clamp(22px, 5vw, 32px);
+    line-height: 1.1;
+    letter-spacing: 0.03em;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .percentile-headline span { color: var(--gold); }
+  .percentile-bar-wrap {
+    position: relative;
+    height: 8px;
+    background: linear-gradient(90deg, #c0392b, #d4801a, #c9a84c, #27ae60);
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .percentile-marker {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    background: var(--white);
+    border-radius: 50%;
+    border: 2px solid var(--black);
+    box-shadow: 0 0 0 2px var(--gold);
+    transition: left 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  .percentile-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 20px;
+  }
+  .percentile-context {
+    font-size: 14px;
+    color: var(--grey);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+  .percentile-context strong { color: var(--white); font-weight: 500; }
+ 
   /* MOBILE */
   @media (max-width: 480px) {
     .app { padding: 60px 16px 40px; }
@@ -838,7 +897,19 @@
       <p class="result-desc" id="tierDesc"></p>
     </div>
  
-    <div class="divider"></div>
+    <div class="percentile-block">
+      <div class="percentile-eyebrow">How You Stack Up</div>
+      <div class="percentile-headline" id="percentileHeadline">You're in the <span id="percentileText">Top 15%</span> of men aged 25-35</div>
+      <div class="percentile-bar-wrap">
+        <div class="percentile-marker" id="percentileMarker" style="left:0%"></div>
+      </div>
+      <div class="percentile-bar-labels">
+        <span>Bottom 10%</span>
+        <span>Average</span>
+        <span>Top 10%</span>
+      </div>
+      <p class="percentile-context" id="percentileContext"></p>
+    </div>
  
     <div class="breakdown">
       <div class="breakdown-label">Pillar Breakdown</div>
@@ -1308,6 +1379,38 @@ function showResults(name) {
   document.getElementById('ctaEyebrow').textContent = tier.ctaEyebrow;
   document.getElementById('ctaTitle').textContent = tier.ctaTitle;
   document.getElementById('ctaBody').textContent = tier.ctaBody;
+ 
+  // Percentile calculation
+  // Score distribution: bottom 20% = 0-8, next 35% = 9-16, next 30% = 17-24, top 15% = 25-32
+  const pctScore = Math.round((total / maxScore) * 100);
+  // Map raw percentage to a bell-curve style percentile
+  let percentile;
+  if (pctScore >= 78) percentile = Math.round(90 + (pctScore - 78) * 0.45); // top 10%
+  else if (pctScore >= 53) percentile = Math.round(60 + (pctScore - 53) * 1.2); // 60-90th
+  else if (pctScore >= 28) percentile = Math.round(25 + (pctScore - 28) * 1.4); // 25-60th
+  else percentile = Math.round((pctScore / 28) * 25); // bottom 25%
+  percentile = Math.min(99, Math.max(1, percentile));
+ 
+  // Correct language: Top X% if above 50th, Bottom X% if below 50th
+  const isTop = percentile >= 50;
+  const displayPct = isTop ? (100 - percentile) : percentile;
+  const pctLabel = isTop ? `Top ${displayPct}%` : `Bottom ${displayPct}%`;
+ 
+  document.getElementById('percentileText').textContent = pctLabel;
+  document.getElementById('percentileText').style.color = isTop ? 'var(--gold)' : '#c0392b';
+ 
+  // Context message
+  let contextMsg;
+  if (percentile >= 85) contextMsg = '<strong>Elite level.</strong> You're outperforming the vast majority of men your age. The gap to absolute peak is narrow — but at this level, that gap determines everything.';
+  else if (percentile >= 65) contextMsg = '<strong>Above average</strong> for your age group. You have a strong foundation — the gap to elite is measurable and closeable with the right focus.';
+  else if (percentile >= 40) contextMsg = '<strong>Average</strong> for your age group. There are clear gaps across your pillars that are holding your performance back more than you realise.';
+  else contextMsg = '<strong>Below average</strong> for your age group. Multiple systems are underperforming. This isn't about effort — your biology needs attention.';
+  document.getElementById('percentileContext').innerHTML = contextMsg;
+ 
+  // Animate marker position (left = bottom 10%, right = top 10%)
+  setTimeout(() => {
+    document.getElementById('percentileMarker').style.left = percentile + '%';
+  }, 400);
  
   // Animate bars
   setTimeout(() => {
